@@ -83,20 +83,23 @@ context 'dynamic feature groups' do
     Rails.stubs(:env).returns('production')
     FeatureFlipper.current_feature_group = :beta_users
 
-    assert show_feature?(:beta_feature)
+    assert show_feature?(:beta_feature_old)
+    assert show_feature?(:beta_feature_new)
   end
 
   test 'should not show a beta feature if not in the group' do
     Rails.stubs(:env).returns('production')
     FeatureFlipper.current_feature_group = :different_feature_group
 
-    assert !show_feature?(:beta_feature)
+    assert !show_feature?(:beta_feature_old)
+    assert !show_feature?(:beta_feature_new)
   end
 
   test 'should always show a beta feature on dev' do
     Rails.stubs(:env).returns('development')
     FeatureFlipper.current_feature_group = nil
 
-    assert show_feature?(:beta_feature)
+    assert show_feature?(:beta_feature_old)
+    assert show_feature?(:beta_feature_new)
   end
 end

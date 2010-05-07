@@ -46,8 +46,12 @@ module FeatureFlipper
     def self.active_status?(status)
       active = states[status]
       if active.is_a?(Hash)
-        group, group_status = active.to_a.flatten
-        FeatureFlipper.current_feature_group == group || states[group_status] == true
+        if active.has_key?(:feature_group)
+          group, required_state = active[:feature_group], active[:required_state]
+        else
+          group, required_state = active.to_a.flatten
+        end
+        (FeatureFlipper.current_feature_group == group) || (states[required_state] == true)
       else
         active == true
       end
