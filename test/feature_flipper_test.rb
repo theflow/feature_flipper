@@ -76,12 +76,12 @@ context 'dynamic feature groups' do
   setup do
     FeatureFlipper::Config.path_to_file = 'features.rb'
     FeatureFlipper::Config.reload_config
-    FeatureFlipper.current_feature_group = nil
+    FeatureFlipper.reset_current_feature_groups
   end
 
   test 'should show a beta feature to the feature group' do
     Rails.stubs(:env).returns('production')
-    FeatureFlipper.current_feature_group = :beta_users
+    FeatureFlipper.current_feature_groups << :beta_users
 
     assert show_feature?(:beta_feature_old)
     assert show_feature?(:beta_feature_new)
@@ -89,7 +89,7 @@ context 'dynamic feature groups' do
 
   test 'should not show a beta feature if not in the group' do
     Rails.stubs(:env).returns('production')
-    FeatureFlipper.current_feature_group = :different_feature_group
+    FeatureFlipper.current_feature_groups << :different_feature_group
 
     assert !show_feature?(:beta_feature_old)
     assert !show_feature?(:beta_feature_new)
@@ -97,9 +97,18 @@ context 'dynamic feature groups' do
 
   test 'should always show a beta feature on dev' do
     Rails.stubs(:env).returns('development')
-    FeatureFlipper.current_feature_group = nil
+    FeatureFlipper.current_feature_groups << nil
 
     assert show_feature?(:beta_feature_old)
     assert show_feature?(:beta_feature_new)
+  end
+
+  test 'can be in two feature groups at the same time' do
+    Rails.stubs(:env).returns('production')
+    FeatureFlipper.current_feature_groups << :beta_users
+    FeatureFlipper.current_feature_groups << :employees
+
+    assert show_feature?(:beta_feature_new)
+    assert show_feature?(:employee_feature)
   end
 end

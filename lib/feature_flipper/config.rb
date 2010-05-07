@@ -51,7 +51,7 @@ module FeatureFlipper
         else
           group, required_state = active.to_a.flatten
         end
-        (FeatureFlipper.current_feature_group == group) || (states[required_state] == true)
+        (FeatureFlipper.current_feature_groups.include?(group)) || (states[required_state] == true)
       else
         active == true
       end
@@ -91,11 +91,15 @@ module FeatureFlipper
     StatusMapper.new.instance_eval(&block)
   end
 
-  def self.current_feature_group
-    Thread.current[:feature_system_current_feature_group]
+  def self.current_feature_groups
+    Thread.current[:feature_system_current_feature_groups] ||= []
+  end
+
+  def self.reset_current_feature_groups
+    current_feature_groups.clear
   end
 
   def self.current_feature_group=(feature_group)
-    Thread.current[:feature_system_current_feature_group] = feature_group
+    current_feature_groups << feature_group
   end
 end

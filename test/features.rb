@@ -5,14 +5,16 @@ FeatureFlipper::Config.features = {
   :boolean_feature  => { :status => true },
   :proc_feature     => { :status => Proc.new { Date.today > Date.today - 84000 } },
   :beta_feature_old => { :status => :beta_old },
-  :beta_feature_new => { :status => :beta_new }
+  :beta_feature_new => { :status => :beta_new },
+  :employee_feature => { :status => :employees }
 }
 
 
 FeatureFlipper::Config.states = {
-  :disabled => false,
-  :dev      => ['development', 'test'].include?(Rails.env),
-  :beta_old => { :beta_users => :dev },
-  :beta_new => { :required_state => :dev, :feature_group => :beta_users },
-  :live     => true
+  :disabled    => false,
+  :dev         => ['development', 'test'].include?(Rails.env),
+  :beta_old    => { :beta_users => :dev },
+  :beta_new    => { :required_state => :dev, :feature_group => :beta_users },
+  :employees   => { :required_state => :dev, :feature_group => :employees },
+  :live        => true
 }
