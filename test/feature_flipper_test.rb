@@ -27,27 +27,6 @@ context 'hash based FeatureFlipper' do
     assert show_feature?(:proc_feature)
   end
 
-  test 'should show a beta feature to the feature group' do
-    Rails.stubs(:env).returns('production')
-    FeatureFlipper.stubs(:current_feature_group).returns(:beta_users)
-
-    assert show_feature?(:beta_feature)
-  end
-
-  test 'should not show a beta feature if not in the group' do
-    Rails.stubs(:env).returns('production')
-    FeatureFlipper.stubs(:current_feature_group).returns(nil)
-
-    assert !show_feature?(:beta_feature)
-  end
-
-  test 'should always show a beta feature on dev' do
-    Rails.stubs(:env).returns('development')
-    FeatureFlipper.stubs(:current_feature_group).returns(nil)
-
-    assert show_feature?(:beta_feature)
-  end
-
   test 'should be able to get features' do
     FeatureFlipper::Config.ensure_config_is_loaded
     all_features = FeatureFlipper::Config.features
@@ -90,5 +69,34 @@ context 'DSL based FeatureFlipper' do
     assert all_features.is_a?(Hash)
     assert_equal :dev, all_features[:dev_feature][:status]
     assert_equal 'dev feature', all_features[:dev_feature][:description]
+  end
+end
+
+context 'dynamic feature groups' do
+  setup do
+    FeatureFlipper::Config.path_to_file = 'features.rb'
+    FeatureFlipper::Config.reload_config
+    FeatureFlipper.current_feature_group = nil
+  end
+
+  test 'should show a beta feature to the feature group' do
+    Rails.stubs(:env).returns('production')
+    FeatureFlipper.current_feature_group = :beta_users
+
+    assert show_feature?(:beta_feature)
+  end
+
+  test 'should not show a beta feature if not in the group' do
+    Rails.stubs(:env).returns('production')
+    FeatureFlipper.current_feature_group = :different_feature_group
+
+    assert !show_feature?(:beta_feature)
+  end
+
+  test 'should always show a beta feature on dev' do
+    Rails.stubs(:env).returns('development')
+    FeatureFlipper.current_feature_group = nil
+
+    assert show_feature?(:beta_feature)
   end
 end
