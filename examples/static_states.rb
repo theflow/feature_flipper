@@ -24,12 +24,16 @@ FeatureFlipper::Config.path_to_file = "features.rb"
 # Usage
 #
 
+puts "=== first example:"
+
 # rating_game is still in development, so shouldn't be shown on production
 if show_feature?(:rating_game)
   puts "Rating Game"
 else
   puts "old stuff"
 end
+
+puts "\n=== second example:"
 
 # city_feed is enabled everywhere
 if show_feature?(:city_feed)

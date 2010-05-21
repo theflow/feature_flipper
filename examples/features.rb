@@ -11,9 +11,14 @@ FeatureFlipper.features do
   in_status :live do
     feature :city_feed, :description => 'stream of content for each city'
   end
+
+  in_status :employees do
+    feature :badges, :description => 'new badges'
+  end
 end
 
 FeatureFlipper::Config.states = {
-  :dev      => ['development', 'test'].include?(Rails.env),
-  :live     => true
+  :dev       => ['development', 'test'].include?(Rails.env),
+  :employees => { :required_state => :dev, :feature_group => :employees },
+  :live      => true
 }
