@@ -18,54 +18,6 @@ configuration file after requiring FeatureFlipper:
     require 'feature_flipper'
     FeatureFlipper::Config.path_to_file = "#{RAILS_ROOT}/config/features.rb"
 
-Configuration
--------------
-
-You need to create a configuration file which defines the two entities
-FeatureFlipper cares about:
-
- * states
- * features
-
-You first define multiple 'states' which normally depend on an environment
-(for example: the state 'dev' is only active on development boxes). After that
-you add 'features' which correspond to logical chunks of work in your project.
-These features then move through the different states as they get developed.
-
-### Defining features
-
-A feature needs to have a name and you can add additional information like a
-more detailed description, a ticket number, a date when it was started, etc.
-Features are always defined in a state, you cannot define a feature which
-doesn't belong to a state.
-
-    in_state :development do
-      feature :rating_game, :description => 'play a game to get recommendations'
-    end
-
-### Defining states
-
-A state is just a name and a boolean check. The check needs to evaluate to
-´true´ when it is active. For a Rails app you can just use environments:
-
-    FeatureFlipper::Config.states = {
-      :development => ['development', 'test'].include?(Rails.env)
-    }
-
-Usage
------
-
-In your code you then use the `show_feature?` method to branch depending on
-wether the feature is active or not:
-
-    if show_feature?(:rating_game)
-      # new code
-    else
-      # old code
-    end
-
-The `show_feature?` method is defined on Object, so you can use it everywhere.
-
 Example config file
 -------------------
 
@@ -93,15 +45,64 @@ production site. The feature `:city_feed` is done and already enabled
 everywhere. You transition features between states by just moving the line to
 the new state block.
 
-You can take a look at the `static_states.rb` in the 'examples' folder to
+You can take a look at the `static_states.rb` in the examples folder to
 see this in detail.
+
+Configuration
+-------------
+
+You need to create a configuration file which defines the two entities
+FeatureFlipper cares about:
+
+ * states
+ * features
+
+You first define multiple 'states' which normally depend on the environment
+(for example: the state 'development' is only active on development boxes).
+After that you add 'features' which correspond to logical chunks of work in
+your project. These features then move through the different states
+as they get developed (for example: :development -> :staging -> :live).
+
+### Defining features
+
+A feature needs to have a name and you can add additional information like a
+more detailed description, a ticket number, a date when it was started, etc.
+Features are always defined in a state, you cannot define a feature which
+doesn't belong to a state.
+
+    in_state :development do
+      feature :rating_game, :description => 'play a game to get recommendations'
+    end
+
+### Defining states
+
+A state is just a name and a boolean check. The check needs to evaluate to
+`true` when it is active. For a Rails app you can just use environments:
+
+    FeatureFlipper::Config.states = {
+      :development => ['development', 'test'].include?(Rails.env)
+    }
+
+Usage
+-----
+
+In your code you then use the `show_feature?` method to branch depending on
+wether a feature is active or not:
+
+    if show_feature?(:rating_game)
+      # new code
+    else
+      # old code
+    end
+
+The `show_feature?` method is defined on Object, so you can use it everywhere.
 
 Cleaning up
 -----------
 
 The drawback of this approach is that your code can get quite ugly with all
-these if/else branches. So you have to be strict about removing (we call it
-de-featurizing) features after they have gone live.
+these if/else branches. So you have to be strict about removing features
+(we call it de-featurizing) after they have gone live.
 
 Dynamic feature groups
 ----------------------
@@ -109,7 +110,7 @@ Dynamic feature groups
 As soon as we have the feature_flipper infrastructure in place, we can start
 doing more interesting things with it. For example, dynamic features which
 are enabled on a per user basis. This allows you to release features to
-employees only, to a private beta group, etc.
+employees only or to a private beta group, etc.
 
 ### Defining dynamic states
 
@@ -121,9 +122,10 @@ A dynamic state is defined a bit different than a normal, static state.
     }
 
 It has a required state and a feature group. The feature group defines
-the name of the group of users which should see this feature. The required
-state is the state that gets looked at for all other users that aren't in
-the feature group. The required_state must also be defined as a separate state.
+a symbolic name for the group of users who should see this feature. You
+can name this whatever you want. The required state is the state that gets
+looked at for all other users that aren't in the feature group. The required
+state (:development) must be a defined, static state.
 
 ### Setting the feature group
 
@@ -135,7 +137,7 @@ In Rails you would define a before_filter like this:
       
       def set_active_feature_group
         # we need to reset the feature group in each request,
-        # otherwise it persists (which is not want we want).
+        # otherwise it's also active for the following requests.
         FeatureFlipper.reset_active_feature_groups
         
         if logged_in? && current_user.employee?
@@ -143,9 +145,10 @@ In Rails you would define a before_filter like this:
         end
       end
 
-It's really important to reset the feature group, otherwise it's not dynamic.
-The condition if someone is in a feature group can be anything: You can
-store it in the database, in Redis, look at request parameters, etc.
+Don't forget to reset the feature group, without it the feature group
+is active forever. The condition if someone is in a feature group
+can be anything: You can store it in the database, in Redis,
+look at request parameters, based on the current time, etc.
 
 Take a look at `dynamic_states.rb` in the examples folder to see this
 in detail.
