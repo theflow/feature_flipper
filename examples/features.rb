@@ -4,7 +4,7 @@
 #
 
 FeatureFlipper.features do
-  in_state :dev do
+  in_state :development do
     feature :rating_game, :description => 'play a game to get recommendations'
   end
 
@@ -18,7 +18,7 @@ FeatureFlipper.features do
 end
 
 FeatureFlipper::Config.states = {
-  :dev       => ['development', 'test'].include?(Rails.env),
-  :employees => { :required_state => :dev, :feature_group => :employees },
-  :live      => true
+  :development => ['development', 'test'].include?(Rails.env),
+  :employees   => { :required_state => :development, :feature_group => :employees },
+  :live        => true
 }

@@ -39,7 +39,7 @@ more detailed description, a ticket number, a date when it was started, etc.
 Features are always defined in a state, you cannot define a feature which
 doesn't belong to a state.
 
-    in_state :dev do
+    in_state :development do
       feature :rating_game, :description => 'play a game to get recommendations'
     end
 
@@ -48,7 +48,9 @@ doesn't belong to a state.
 A state is just a name and a boolean check. The check needs to evaluate to
 ´true´ when it is active. For a Rails app you can just use environments:
 
-    :dev      => ['development', 'test'].include?(Rails.env),
+    FeatureFlipper::Config.states = {
+      :development => ['development', 'test'].include?(Rails.env)
+    }
 
 Usage
 -----
@@ -68,7 +70,7 @@ Example config file
 -------------------
 
     FeatureFlipper.features do
-      in_state :dev do
+      in_state :development do
         feature :rating_game, :description => 'play a game to get recommendations'
       end
 
@@ -78,12 +80,12 @@ Example config file
     end
 
     FeatureFlipper::Config.states = {
-      :dev      => ['development', 'test'].include?(Rails.env),
-      :live     => true
+      :development => ['development', 'test'].include?(Rails.env),
+      :live        => true
     }
 
 This is your complete features.rb config file. In the example there are two
-states: `:dev` is active on development boxes and `:live` is always active
+states: `:development` is active on development boxes and `:live` is always active
 (this is the last state a feature goes through).
 
 The feature `:rating_game` is still in development and not shown on the
@@ -114,8 +116,8 @@ employees only, to a private beta group, etc.
 A dynamic state is defined a bit different than a normal, static state.
 
     FeatureFlipper::Config.states = {
-      :dev       => ['development', 'test'].include?(Rails.env),
-      :employees => { :required_state => :dev, :feature_group => :employees }
+      :development => ['development', 'test'].include?(Rails.env),
+      :employees   => { :required_state => :development, :feature_group => :employees }
     }
 
 It has a required state and a feature group. The feature group defines
