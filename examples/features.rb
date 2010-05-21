@@ -4,15 +4,15 @@
 #
 
 FeatureFlipper.features do
-  in_status :dev do
+  in_state :dev do
     feature :rating_game, :description => 'play a game to get recommendations'
   end
 
-  in_status :live do
+  in_state :live do
     feature :city_feed, :description => 'stream of content for each city'
   end
 
-  in_status :employees do
+  in_state :employees do
     feature :badges, :description => 'new badges'
   end
 end

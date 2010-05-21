@@ -1,17 +1,17 @@
 FeatureFlipper.features do
-  in_status :dev do
+  in_state :dev do
     feature :dev_feature, :description => 'dev feature'
   end
 
-  in_status :live do
+  in_state :live do
     feature :live_feature
   end
 
-  in_status true do
+  in_state true do
     feature :boolean_feature
   end
 
-  in_status Proc.new { Date.today > Date.today - 84000 } do
+  in_state Proc.new { Date.today > Date.today - 84000 } do
     feature :proc_feature
   end
 end

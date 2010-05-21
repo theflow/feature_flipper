@@ -39,7 +39,7 @@ more detailed description, a ticket number, a date when it was started, etc.
 Features are always defined in a state, you cannot define a feature which
 doesn't belong to a state.
 
-    in_status :dev do
+    in_state :dev do
       feature :rating_game, :description => 'play a game to get recommendations'
     end
 
@@ -68,11 +68,11 @@ Example config file
 -------------------
 
     FeatureFlipper.features do
-      in_status :dev do
+      in_state :dev do
         feature :rating_game, :description => 'play a game to get recommendations'
       end
 
-      in_status :live do
+      in_state :live do
         feature :city_feed, :description => 'stream of content for each city'
       end
     end

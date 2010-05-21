@@ -38,13 +38,13 @@ module FeatureFlipper
       @states = states
     end
 
-    def self.get_status(feature_name)
+    def self.get_state(feature_name)
       feature = features[feature_name]
-      feature ? feature[:status] : nil
+      feature ? feature[:state] : nil
     end
 
-    def self.active_status?(status)
-      active = states[status]
+    def self.active_state?(state)
+      active = states[state]
       if active.is_a?(Hash)
         if active.has_key?(:feature_group)
           group, required_state = active[:feature_group], active[:required_state]
@@ -60,35 +60,35 @@ module FeatureFlipper
     def self.is_active?(feature_name)
       ensure_config_is_loaded
 
-      status = get_status(feature_name)
-      if status.is_a?(Symbol)
-        active_status?(status)
-      elsif status.is_a?(Proc)
-        status.call == true
+      state = get_state(feature_name)
+      if state.is_a?(Symbol)
+        active_state?(state)
+      elsif state.is_a?(Proc)
+        state.call == true
       else
-        status == true
+        state == true
       end
     end
   end
 
   class Mapper
-    def initialize(status)
-      @status = status
+    def initialize(state)
+      @state = state
     end
 
     def feature(name, options = {})
-      FeatureFlipper::Config.features[name] = options.merge(:status => @status)
+      FeatureFlipper::Config.features[name] = options.merge(:state => @state)
     end
   end
 
-  class StatusMapper
-    def in_status(status, &block)
-      Mapper.new(status).instance_eval(&block)
+  class StateMapper
+    def in_state(state, &block)
+      Mapper.new(state).instance_eval(&block)
     end
   end
 
   def self.features(&block)
-    StatusMapper.new.instance_eval(&block)
+    StateMapper.new.instance_eval(&block)
   end
 
   def self.current_feature_groups

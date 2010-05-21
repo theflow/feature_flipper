@@ -33,7 +33,7 @@ context 'hash based FeatureFlipper' do
 
     assert_not_nil all_features
     assert all_features.is_a?(Hash)
-    assert_equal :dev, all_features[:dev_feature][:status]
+    assert_equal :dev, all_features[:dev_feature][:state]
     assert_equal 'dev feature', all_features[:dev_feature][:description]
   end
 end
@@ -67,7 +67,7 @@ context 'DSL based FeatureFlipper' do
 
     assert_not_nil all_features
     assert all_features.is_a?(Hash)
-    assert_equal :dev, all_features[:dev_feature][:status]
+    assert_equal :dev, all_features[:dev_feature][:state]
     assert_equal 'dev feature', all_features[:dev_feature][:description]
   end
 end
