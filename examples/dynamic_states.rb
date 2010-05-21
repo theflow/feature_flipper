@@ -26,7 +26,7 @@ FeatureFlipper::Config.path_to_file = "features.rb"
 
 puts "=== first example:"
 
-# no current_feature_group set, so the required_state of badges is looked at
+# no active feature_group set, so the required_state of badges is looked at
 if show_feature?(:badges)
   puts "shiny new badges not live on prod yet"
 else
@@ -35,10 +35,10 @@ end
 
 puts "\n=== second example:"
 
-# now we set the current_feature_group. Usually depending on the logged in user
+# now we set the active feature_group. Usually depending on the logged in user
 
-FeatureFlipper.reset_current_feature_groups
-FeatureFlipper.current_feature_groups << :employees
+FeatureFlipper.reset_active_feature_groups
+FeatureFlipper.active_feature_groups << :employees
 
 if show_feature?(:badges)
   puts "shiny new badges for this user"

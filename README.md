@@ -92,7 +92,7 @@ everywhere. You transition features between states by just moving the line to
 the new state block.
 
 You can take a look at the `static_states.rb` in the 'examples' folder to
-see this in detail
+see this in detail.
 
 Cleaning up
 -----------
@@ -125,19 +125,19 @@ the feature group. The required_state must also be defined as a separate state.
 
 ### Setting the feature group
 
-The current feature group is set globally and is active for the whole thread.
+The feature group is set globally and is active for the whole thread.
 In Rails you would define a before_filter like this:
 
     class ApplicationController < ActionController::Base
-      before_filter :set_current_feature_group
+      before_filter :set_active_feature_group
       
-      def set_current_feature_group
+      def set_active_feature_group
         # we need to reset the feature group in each request,
         # otherwise it persists (which is not want we want).
-        FeatureFlipper.reset_current_feature_groups
+        FeatureFlipper.reset_active_feature_groups
         
         if logged_in? && current_user.employee?
-          FeatureFlipper.current_feature_groups << :employees
+          FeatureFlipper.active_feature_groups << :employees
         end
       end
 
