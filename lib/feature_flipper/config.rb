@@ -98,8 +98,4 @@ module FeatureFlipper
   def self.reset_current_feature_groups
     current_feature_groups.clear
   end
-
-  def self.current_feature_group=(feature_group)
-    current_feature_groups << feature_group
-  end
 end
