@@ -5,6 +5,9 @@ FeatureFlipper is a simple library that allows you to restrict certain blocks
 of code to certain environments. This is mainly useful in projects where
 you deploy your application from HEAD and don't use branches.
 
+Read more about the motivation in the
+[introductory blog post](http://engineering.qype.com/2010/06/03/how-we-work-flipping-features/).
+
 Install
 -------
 
