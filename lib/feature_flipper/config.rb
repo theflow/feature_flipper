@@ -82,12 +82,21 @@ module FeatureFlipper
   end
 
   class StateMapper
-    def in_state(state, &block)
+    def in_state(state, condition = nil, &block)
+      state(state, condition) unless condition.nil?
       Mapper.new(state).instance_eval(&block)
+    end
+    
+    def state(name, condition = false)
+      FeatureFlipper::Config.states[name] = condition
     end
   end
 
   def self.features(&block)
+    StateMapper.new.instance_eval(&block)
+  end
+  
+  def self.states(&block)
     StateMapper.new.instance_eval(&block)
   end
 
