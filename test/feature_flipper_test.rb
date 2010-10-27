@@ -112,3 +112,18 @@ context 'dynamic feature groups' do
     assert show_feature?(:employee_feature)
   end
 end
+
+context 'feature dependencies' do
+  setup do
+    FeatureFlipper::Config.path_to_file = 'features.rb'
+    FeatureFlipper::Config.reload_config
+    FeatureFlipper.reset_active_feature_groups
+  end
+  
+  test 'should correctly check feature dependencies' do
+    assert show_feature?(:requires_live)
+    assert show_feature?(:requires_many)
+    
+    assert !show_feature?(:requires_disabled)
+  end
+end

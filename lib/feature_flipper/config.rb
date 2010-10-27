@@ -42,9 +42,16 @@ module FeatureFlipper
       feature = features[feature_name]
       feature ? feature[:state] : nil
     end
+    
+    def self.active_dependencies?(feature_name)
+      feature = features[feature_name]
+      [*(feature[:requires] || [])].all? do |required_feature| 
+        FeatureFlipper::Config.is_active?(required_feature)
+      end
+    end
 
     def self.active_state?(state)
-      active = states[state]
+      active = state.is_a?(Symbol) ? states[state] : state
       if active.is_a?(Hash)
         if active.has_key?(:feature_group)
           group, required_state = active[:feature_group], active[:required_state]
@@ -63,13 +70,7 @@ module FeatureFlipper
       ensure_config_is_loaded
 
       state = get_state(feature_name)
-      if state.is_a?(Symbol)
-        active_state?(state)
-      elsif state.is_a?(Proc)
-        state.call == true
-      else
-        state == true
-      end
+      active_dependencies?(feature_name) && active_state?(state)
     end
   end
 

@@ -13,6 +13,9 @@ FeatureFlipper.features do
   
   in_state :live do
     feature :boolean_feature
+    feature :requires_live, :requires => :boolean_feature
+    feature :requires_disabled, :requires => :disabled_feature
+    feature :requires_many, :requires => [:boolean_feature, :requires_live]
   end
   
   in_state :proc do
