@@ -52,6 +52,8 @@ module FeatureFlipper
           group, required_state = active.to_a.flatten
         end
         (FeatureFlipper.active_feature_groups.include?(group)) || (states[required_state] == true)
+      elsif active.is_a?(Proc)
+        active.call == true
       else
         active == true
       end
