@@ -70,6 +70,18 @@ context 'DSL based FeatureFlipper' do
     assert_equal :dev, all_features[:dev_feature][:state]
     assert_equal 'dev feature', all_features[:dev_feature][:description]
   end
+
+  test 'should be able to get active features' do
+    Rails.stubs(:env).returns('production')
+    FeatureFlipper::Config.ensure_config_is_loaded
+    active_features = FeatureFlipper::Config.active_features
+
+    assert_equal 3, active_features.size
+    assert active_features.include?(:live_feature)
+    assert active_features.include?(:boolean_feature)
+    assert active_features.include?(:proc_feature)
+  end
+
 end
 
 context 'dynamic feature groups' do

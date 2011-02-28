@@ -38,6 +38,10 @@ module FeatureFlipper
       @states = states
     end
 
+    def self.active_features
+      features.keys.select { |feature| is_active?(feature) }
+    end
+
     def self.get_state(feature_name)
       feature = features[feature_name]
       feature ? feature[:state] : nil
@@ -68,10 +72,6 @@ module FeatureFlipper
       else
         state == true
       end
-    end
-    
-    def self.active_features
-      self.features.collect { |key, value| self.is_active?(key) ? key : nil }.compact
     end
   end
 
