@@ -4,10 +4,11 @@ require 'feature_flipper/version'
 Gem::Specification.new do |s|
   s.name              = 'feature_flipper'
   s.version           = FeatureFlipper::VERSION
+  s.platform          = Gem::Platform::RUBY
   s.date              = Time.now.strftime('%Y-%m-%d')
   s.summary           = 'FeatureFlipper helps you flipping features'
   s.homepage          = 'http://github.com/qype/feature_flipper'
-  s.email             = 'florian@qype.com'
+  s.email             = 'surf@theflow.de'
   s.authors           = ['Florian Munz']
   s.has_rdoc          = false
 

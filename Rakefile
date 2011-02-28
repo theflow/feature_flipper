@@ -11,11 +11,3 @@ Rake::TestTask.new(:test) do |t|
   t.pattern = 'test/**/*_test.rb'
   t.verbose = true
 end
-
-begin
-  require 'mg'
-  MG.new('feature_flipper.gemspec')
-rescue LoadError
-  warn 'mg not available.'
-  warn 'Install it with: gem install mg'
-end
