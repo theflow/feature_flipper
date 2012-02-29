@@ -57,7 +57,7 @@ context 'DSL based FeatureFlipper' do
     assert show_feature?(:boolean_feature)
   end
 
-  test 'show feature should work with procs' do
+  test 'show feature should work with feature procs' do
     assert show_feature?(:proc_feature)
   end
 
@@ -70,6 +70,12 @@ context 'DSL based FeatureFlipper' do
     assert_equal :dev, all_features[:dev_feature][:state]
     assert_equal 'dev feature', all_features[:dev_feature][:description]
   end
+
+  test 'show feature should work with state procs' do
+    assert show_feature?(:enabled_beta_feature)
+    assert !show_feature?(:disabled_beta_feature)
+  end
+
 end
 
 context 'dynamic feature groups' do
