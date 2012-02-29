@@ -38,24 +38,23 @@ module FeatureFlipper
       @states = states
     end
 
-    def self.active_features
-      features.keys.select { |feature| is_active?(feature) }
-    end
-
     def self.get_state(feature_name)
       feature = features[feature_name]
       feature ? feature[:state] : nil
     end
 
-    def self.active_state?(state)
+    def self.active_state?(state, feature_name)
       active = states[state]
-      if active.is_a?(Hash)
+      case
+      when active.is_a?(Hash)
         if active.has_key?(:feature_group)
           group, required_state = active[:feature_group], active[:required_state]
         else
           group, required_state = active.to_a.flatten
         end
         (FeatureFlipper.active_feature_groups.include?(group)) || (states[required_state] == true)
+      when active.is_a?(Proc)
+        active.call(feature_name) == true
       else
         active == true
       end
@@ -66,12 +65,16 @@ module FeatureFlipper
 
       state = get_state(feature_name)
       if state.is_a?(Symbol)
-        active_state?(state)
+        active_state?(state, feature_name)
       elsif state.is_a?(Proc)
         state.call == true
       else
         state == true
       end
+    end
+
+    def self.active_features
+      self.features.collect { |key, value| self.is_active?(key) ? key : nil }.compact
     end
   end
 

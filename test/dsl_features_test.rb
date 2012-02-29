@@ -20,7 +20,7 @@ class DslFeaturesTest < Minitest::Test
     assert show_feature?(:boolean_feature)
   end
 
-  def test_show_feature_should_work_with_procs
+  def test_show_feature_should_work_with_feature_procs
     assert show_feature?(:proc_feature)
   end
 
@@ -44,5 +44,16 @@ class DslFeaturesTest < Minitest::Test
       assert active_features.include?(:boolean_feature)
       assert active_features.include?(:proc_feature)
     end
+  end
+
+  def test_show_feature_should_work_with_state_procs
+    Rails.stub(:env, 'production') do
+      assert show_feature?(:enabled_beta_feature)
+      assert !show_feature?(:disabled_beta_feature)
+    end
+  end
+
+  def test_show_feature_should_with_state_procs_should_still_respect_environment
+    assert show_feature?(:disabled_beta_feature)
   end
 end
