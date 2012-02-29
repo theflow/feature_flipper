@@ -45,16 +45,18 @@ module FeatureFlipper
 
     def self.active_state?(state, feature_name)
       active = states[state]
-      case
-      when active.is_a?(Hash)
-        if active.has_key?(:feature_group)
-          group, required_state = active[:feature_group], active[:required_state]
+      if active.is_a?(Hash)
+        group, required_state = if %w{ feature_group required_state }.any? { |key| active.has_key?(key.to_sym) }
+          [active[:feature_group], active[:required_state]]
         else
-          group, required_state = active.to_a.flatten
+          active.to_a.flatten
         end
-        (FeatureFlipper.active_feature_groups.include?(group)) || (states[required_state] == true)
-      when active.is_a?(Proc)
-        active.call(feature_name) == true
+
+        has_feature_group   = group ? FeatureFlipper.active_feature_groups.include?(group) : false
+        has_required_state  = required_state ? self.active_state?(required_state, feature_name) : false
+        proc_returns_true   = active.has_key?(:when) ? active[:when].call(feature_name) == true : false
+
+        has_feature_group || has_required_state || proc_returns_true
       else
         active == true
       end

@@ -72,8 +72,13 @@ context 'DSL based FeatureFlipper' do
   end
 
   test 'show feature should work with state procs' do
+    Rails.stubs(:env).returns('production')
     assert show_feature?(:enabled_beta_feature)
     assert !show_feature?(:disabled_beta_feature)
+  end
+
+  test 'show feature should with state procs should still respect environment' do
+    assert show_feature?(:disabled_beta_feature)
   end
 
 end
