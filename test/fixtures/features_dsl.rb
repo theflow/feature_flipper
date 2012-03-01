@@ -25,5 +25,5 @@ end
 FeatureFlipper::Config.states = {
   :dev      => ['development', 'test'].include?(Rails.env),
   :live     => true,
-  :beta     => { :required_state => :dev, :when => Proc.new { |feature| %{ enabled_beta_feature }.include?(feature.to_s) } }
+  :beta     => { :required_state => :dev, :when => Proc.new { |feature| %{ enabled_beta_feature }.include?(feature.to_s) } },
 }

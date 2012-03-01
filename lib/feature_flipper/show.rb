@@ -7,11 +7,11 @@ module FeatureFlipper
     end
 
     def show_feature?(feature_name)
-      FeatureFlipper::Config.is_active?(feature_name)
+      FeatureFlipper::Config.is_active?(feature_name, self)
     end
-    
+
     def active_features
-      FeatureFlipper::Config.active_features
+      FeatureFlipper::Config.active_features(self)
     end
   end
 end
