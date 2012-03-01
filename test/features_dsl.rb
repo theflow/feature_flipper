@@ -19,11 +19,18 @@ FeatureFlipper.features do
     feature :enabled_beta_feature
     feature :disabled_beta_feature
   end
+
+  in_state :context do
+    feature :feature1
+    feature :feature2
+    feature :feature3
+  end
 end
 
 
 FeatureFlipper::Config.states = {
   :dev      => ['development', 'test'].include?(Rails.env),
   :live     => true,
-  :beta     => { :required_state => :dev, :when => Proc.new { |feature| %{ enabled_beta_feature }.include?(feature.to_s) } }
+  :beta     => { :required_state => :dev, :when => Proc.new { |feature| %{ enabled_beta_feature }.include?(feature.to_s) } },
+  :context  => { :when => Proc.new { |feature| current_user_betas.include?(feature) } }
 }

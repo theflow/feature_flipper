@@ -36,3 +36,4 @@ module Rails
 end
 
 require 'feature_flipper'
+require 'context'

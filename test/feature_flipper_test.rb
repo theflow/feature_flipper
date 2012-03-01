@@ -123,3 +123,19 @@ context 'dynamic feature groups' do
     assert show_feature?(:employee_feature)
   end
 end
+
+context 'context binding' do
+  setup { @context = Context.new(:feature1, :feature3) }
+
+  test 'should have feature 1' do
+    assert @context.show_feature?(:feature1)
+  end
+
+  test 'should not have feature 2' do
+    assert !@context.show_feature?(:feature2)
+  end
+
+  test 'should return active features' do
+
+  end
+end

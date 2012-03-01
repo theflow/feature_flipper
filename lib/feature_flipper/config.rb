@@ -43,7 +43,7 @@ module FeatureFlipper
       feature ? feature[:state] : nil
     end
 
-    def self.active_state?(state, feature_name)
+    def self.active_state?(state, feature_name, context = nil)
       active = states[state]
       if active.is_a?(Hash)
         group, required_state = if %w{ feature_group required_state }.any? { |key| active.has_key?(key.to_sym) }
@@ -53,8 +53,16 @@ module FeatureFlipper
         end
 
         has_feature_group   = group ? FeatureFlipper.active_feature_groups.include?(group) : false
-        has_required_state  = required_state ? self.active_state?(required_state, feature_name) : false
-        proc_returns_true   = active.has_key?(:when) ? active[:when].call(feature_name) == true : false
+        has_required_state  = required_state ? self.active_state?(required_state, feature_name, context) : false
+        proc_returns_true   = if active.has_key?(:when)
+          if context
+            context.instance_exec(feature_name, &active[:when])
+          else
+            active[:when].call(feature_name) == true
+          end
+        else
+          false
+        end
 
         has_feature_group || has_required_state || proc_returns_true
       else
@@ -62,12 +70,12 @@ module FeatureFlipper
       end
     end
 
-    def self.is_active?(feature_name)
+    def self.is_active?(feature_name, context = nil)
       ensure_config_is_loaded
 
       state = get_state(feature_name)
       if state.is_a?(Symbol)
-        active_state?(state, feature_name)
+        active_state?(state, feature_name, context)
       elsif state.is_a?(Proc)
         state.call == true
       else
@@ -75,8 +83,8 @@ module FeatureFlipper
       end
     end
 
-    def self.active_features
-      self.features.collect { |key, value| self.is_active?(key) ? key : nil }.compact
+    def self.active_features(context = nil)
+      self.features.collect { |key, value| self.is_active?(key, context) ? key : nil }.compact
     end
   end
 
