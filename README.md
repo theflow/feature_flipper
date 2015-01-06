@@ -1,3 +1,5 @@
+**NOTE: THIS REPO HAS BEEN DEPRECATED**
+
 FeatureFlipper
 ==============
 
