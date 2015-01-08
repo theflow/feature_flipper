@@ -46,9 +46,16 @@ module FeatureFlipper
       feature = features[feature_name]
       feature ? feature[:state] : nil
     end
+    
+    def self.active_dependencies?(feature_name)
+      feature = features[feature_name]
+      [*(feature[:requires] || [])].all? do |required_feature| 
+        FeatureFlipper::Config.is_active?(required_feature)
+      end
+    end
 
     def self.active_state?(state)
-      active = states[state]
+      active = state.is_a?(Symbol) ? states[state] : state
       if active.is_a?(Hash)
         if active.has_key?(:feature_group)
           group, required_state = active[:feature_group], active[:required_state]
@@ -56,6 +63,8 @@ module FeatureFlipper
           group, required_state = active.to_a.flatten
         end
         (FeatureFlipper.active_feature_groups.include?(group)) || (states[required_state] == true)
+      elsif active.is_a?(Proc)
+        active.call == true
       else
         active == true
       end
@@ -65,13 +74,7 @@ module FeatureFlipper
       ensure_config_is_loaded
 
       state = get_state(feature_name)
-      if state.is_a?(Symbol)
-        active_state?(state)
-      elsif state.is_a?(Proc)
-        state.call == true
-      else
-        state == true
-      end
+      active_dependencies?(feature_name) && active_state?(state)
     end
   end
 
@@ -86,12 +89,21 @@ module FeatureFlipper
   end
 
   class StateMapper
-    def in_state(state, &block)
+    def in_state(state, condition = nil, &block)
+      state(state, condition) unless condition.nil?
       Mapper.new(state).instance_eval(&block)
+    end
+    
+    def state(name, condition = false)
+      FeatureFlipper::Config.states[name] = condition
     end
   end
 
   def self.features(&block)
+    StateMapper.new.instance_eval(&block)
+  end
+  
+  def self.states(&block)
     StateMapper.new.instance_eval(&block)
   end
 

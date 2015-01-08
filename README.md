@@ -88,6 +88,12 @@ A state is just a name and a boolean check. The check needs to evaluate to
       :development => ['development', 'test'].include?(Rails.env)
     }
 
+Or you can use neat and simple DSL:
+
+    FeatureFlipper.states do
+      state :development, ['development', 'test'].include?(Rails.env)
+    end
+
 Usage
 -----
 
@@ -121,10 +127,10 @@ employees only or to a private beta group, etc.
 
 A dynamic state is defined a bit different than a normal, static state.
 
-    FeatureFlipper::Config.states = {
-      :development => ['development', 'test'].include?(Rails.env),
-      :employees   => { :required_state => :development, :feature_group => :employees }
-    }
+    FeatureFlipper.states do
+      state :development, ['development', 'test'].include?(Rails.env),
+      state :employees,   { :required_state => :development, :feature_group => :employees }
+    end
 
 It has a required state and a feature group. The feature group defines
 a symbolic name for the group of users who should see this feature. You
@@ -157,6 +163,25 @@ look at request parameters, based on the current time, etc.
 
 Take a look at `dynamic_states.rb` in the examples folder to see this
 in detail.
+
+### Feature dependencies
+
+Specifying :requires option for your feature will create dependency. Example:
+
+    FeatureFlipper.features do
+      in_state :disabled do
+        feature :will_never_work
+      end
+
+      in_state :live do
+        feature :i_want_this, :requires => :will_never_work
+      end
+    end
+
+Sure enough :i_want_this feature will be disabled because it's dependency is 
+disabled. You can specify many dependencies by passing an array of features.
+
+There are no checks for stack overflows so be careful.
 
 Meta
 ----
