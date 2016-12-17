@@ -19,6 +19,9 @@ module FeatureFlipper
     end
 
     def self.reload_config
+      @features = {}
+      @states   = {}
+
       @config_loaded = false
     end
 
