@@ -22,4 +22,7 @@ FeatureFlipper is a simple library that allows you to restrict certain blocks
 of code to certain environments. This is mainly useful in projects where
 you deploy your application from HEAD and don't use branches.
 desc
+
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'minitest', "~> 5.0"
 end
