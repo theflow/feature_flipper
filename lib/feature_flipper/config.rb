@@ -38,40 +38,53 @@ module FeatureFlipper
       @states = states
     end
 
-    def self.active_features
-      features.keys.select { |feature| is_active?(feature) }
-    end
-
     def self.get_state(feature_name)
       feature = features[feature_name]
       feature ? feature[:state] : nil
     end
 
-    def self.active_state?(state)
+    def self.active_state?(state, feature_name, context = nil)
       active = states[state]
       if active.is_a?(Hash)
-        if active.has_key?(:feature_group)
-          group, required_state = active[:feature_group], active[:required_state]
+        group, required_state = if %w{ feature_group required_state }.any? { |key| active.has_key?(key.to_sym) }
+          [active[:feature_group], active[:required_state]]
         else
-          group, required_state = active.to_a.flatten
+          active.to_a.flatten
         end
-        (FeatureFlipper.active_feature_groups.include?(group)) || (states[required_state] == true)
+
+        has_feature_group   = group ? FeatureFlipper.active_feature_groups.include?(group) : false
+        has_required_state  = required_state ? self.active_state?(required_state, feature_name, context) : false
+        proc_returns_true   = if active.has_key?(:when)
+          if context
+            context.instance_exec(feature_name, &active[:when])
+          else
+            active[:when].call(feature_name) == true
+          end
+        else
+          false
+        end
+
+        has_feature_group || has_required_state || proc_returns_true
       else
         active == true
       end
     end
 
-    def self.is_active?(feature_name)
+    def self.is_active?(feature_name, context = nil)
       ensure_config_is_loaded
 
       state = get_state(feature_name)
       if state.is_a?(Symbol)
-        active_state?(state)
+        active_state?(state, feature_name, context)
       elsif state.is_a?(Proc)
         state.call == true
       else
         state == true
       end
+    end
+
+    def self.active_features(context = nil)
+      self.features.collect { |key, value| self.is_active?(key, context) ? key : nil }.compact
     end
   end
 
