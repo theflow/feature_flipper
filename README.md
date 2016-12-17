@@ -103,13 +103,6 @@ wether a feature is active or not:
 
 The `show_feature?` method is defined on Object, so you can use it everywhere.
 
-Cleaning up
------------
-
-The drawback of this approach is that your code can get quite ugly with all
-these if/else branches. So you have to be strict about removing features
-(we call it de-featurizing) after they have gone live.
-
 Dynamic feature groups
 ----------------------
 
