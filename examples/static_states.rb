@@ -18,7 +18,7 @@ end
 require 'feature_flipper'
 
 # set the path to your app specific config file
-FeatureFlipper::Config.path_to_file = "features.rb"
+FeatureFlipper::Config.path_to_file = File.expand_path('features.rb', File.dirname(__FILE__))
 
 
 # Usage

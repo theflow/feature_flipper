@@ -17,8 +17,8 @@ FeatureFlipper.features do
   end
 end
 
-FeatureFlipper::Config.states = {
-  :development => ['development', 'test'].include?(Rails.env),
-  :employees   => { :required_state => :development, :feature_group => :employees },
-  :live        => true
-}
+FeatureFlipper.states do
+  state :development, ['development', 'test'].include?(Rails.env)
+  state :employees, { :required_state => :development, :feature_group => :employees }
+  state :live, true
+end

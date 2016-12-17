@@ -22,7 +22,7 @@ In your project you have to configure the path to the app specific
 configuration file after requiring FeatureFlipper:
 
     require 'feature_flipper'
-    FeatureFlipper::Config.path_to_file = "#{RAILS_ROOT}/config/features.rb"
+    FeatureFlipper::Config.path_to_file = "#{Rails.root}/config/features.rb"
 
 Example config file
 -------------------
@@ -37,13 +37,13 @@ Example config file
       end
     end
 
-    FeatureFlipper::Config.states = {
-      :development => ['development', 'test'].include?(Rails.env),
-      :live        => true
-    }
+    FeatureFlipper.states do
+      state :development, ['development', 'test'].include?(Rails.env)
+      state :live, true
+    end
 
 This is your complete features.rb config file. In the example there are two
-states: `:development` is active on development boxes and `:live` is always active
+states: `:development` is active on development servers and `:live` is always active
 (this is the last state a feature goes through).
 
 The feature `:rating_game` is still in development and not shown on the
@@ -64,7 +64,7 @@ FeatureFlipper cares about:
  * features
 
 You first define multiple 'states' which normally depend on the environment
-(for example: the state 'development' is only active on development boxes).
+(for example: the state 'development' is only active on development servers).
 After that you add 'features' which correspond to logical chunks of work in
 your project. These features then move through the different states
 as they get developed (for example: :development -> :staging -> :live).
@@ -85,9 +85,9 @@ doesn't belong to a state.
 A state is just a name and a boolean check. The check needs to evaluate to
 `true` when it is active. For a Rails app you can just use environments:
 
-    FeatureFlipper::Config.states = {
-      :development => ['development', 'test'].include?(Rails.env)
-    }
+    FeatureFlipper.states do
+      state :development, ['development', 'test'].include?(Rails.env)
+    end
 
 Usage
 -----
@@ -122,10 +122,10 @@ employees only or to a private beta group, etc.
 
 A dynamic state is defined a bit different than a normal, static state.
 
-    FeatureFlipper::Config.states = {
-      :development => ['development', 'test'].include?(Rails.env),
-      :employees   => { :required_state => :development, :feature_group => :employees }
-    }
+    FeatureFlipper.states do
+      state :development, ['development', 'test'].include?(Rails.env)
+      state :employees, :required_state => :development, :feature_group => :employees
+    end
 
 It has a required state and a feature group. The feature group defines
 a symbolic name for the group of users who should see this feature. You
