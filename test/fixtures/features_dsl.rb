@@ -7,14 +7,6 @@ FeatureFlipper.features do
     feature :live_feature
   end
 
-  in_state true do
-    feature :boolean_feature
-  end
-
-  in_state Proc.new { Date.today > Date.today - 84000 } do
-    feature :proc_feature
-  end
-
   in_state :beta do
     feature :enabled_beta_feature
     feature :disabled_beta_feature

@@ -20,14 +20,6 @@ class DslFeaturesTest < Minitest::Test
     end
   end
 
-  def test_show_feature_should_work_with_booleans
-    assert show_feature?(:boolean_feature)
-  end
-
-  def test_show_feature_should_work_with_feature_procs
-    assert show_feature?(:proc_feature)
-  end
-
   def test_should_be_able_to_get_all_features
     FeatureFlipper::Config.ensure_config_is_loaded
     all_features = FeatureFlipper::Config.features
@@ -43,10 +35,8 @@ class DslFeaturesTest < Minitest::Test
       FeatureFlipper::Config.ensure_config_is_loaded
       active_features = FeatureFlipper::Config.active_features
 
-      assert_equal 4, active_features.size
+      assert_equal 2, active_features.size
       assert_includes active_features, :live_feature
-      assert_includes active_features, :boolean_feature
-      assert_includes active_features, :proc_feature
       assert_includes active_features, :enabled_beta_feature
     end
   end

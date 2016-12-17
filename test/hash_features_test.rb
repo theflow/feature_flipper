@@ -22,14 +22,6 @@ class HashFeaturesTest < Minitest::Test
     end
   end
 
-  def test_show_feature_should_work_with_booleans
-    assert show_feature?(:boolean_feature)
-  end
-
-  def test_show_feature_should_work_with_procs
-    assert show_feature?(:proc_feature)
-  end
-
   def test_should_be_able_to_get_features
     FeatureFlipper::Config.ensure_config_is_loaded
     all_features = FeatureFlipper::Config.features

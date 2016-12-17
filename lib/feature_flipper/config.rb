@@ -77,13 +77,7 @@ module FeatureFlipper
       ensure_config_is_loaded
 
       state = get_state(feature_name)
-      if state.is_a?(Symbol)
-        active_state?(state, feature_name, context)
-      elsif state.is_a?(Proc)
-        state.call == true
-      else
-        state == true
-      end
+      active_state?(state, feature_name, context)
     end
 
     def self.active_features(context = nil)
