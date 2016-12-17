@@ -21,26 +21,30 @@ FeatureFlipper is packaged as a gem:
 In your project you have to configure the path to the app specific
 configuration file after requiring FeatureFlipper:
 
-    require 'feature_flipper'
-    FeatureFlipper::Config.path_to_file = "#{Rails.root}/config/features.rb"
+```ruby
+require 'feature_flipper'
+FeatureFlipper::Config.path_to_file = "#{Rails.root}/config/features.rb"
+```
 
 Example config file
 -------------------
 
-    FeatureFlipper.features do
-      in_state :development do
-        feature :rating_game, :description => 'play a game to get recommendations'
-      end
+```ruby
+FeatureFlipper.features do
+  in_state :development do
+    feature :rating_game, :description => 'play a game to get recommendations'
+  end
 
-      in_state :live do
-        feature :city_feed, :description => 'stream of content for each city'
-      end
-    end
+  in_state :live do
+    feature :city_feed, :description => 'stream of content for each city'
+  end
+end
 
-    FeatureFlipper.states do
-      state :development, ['development', 'test'].include?(Rails.env)
-      state :live, true
-    end
+FeatureFlipper.states do
+  state :development, ['development', 'test'].include?(Rails.env)
+  state :live, true
+end
+```
 
 This is your complete features.rb config file. In the example there are two
 states: `:development` is active on development servers and `:live` is always active
@@ -76,19 +80,23 @@ more detailed description, a ticket number, a date when it was started, etc.
 Features are always defined in a state, you cannot define a feature which
 doesn't belong to a state.
 
-    in_state :development do
-      feature :rating_game, :description => 'play a game to get recommendations'
-    end
+```ruby
+in_state :development do
+  feature :rating_game, :description => 'play a game to get recommendations'
+end
+```
 
 ### Defining states
 
 A state is just a name and a boolean check. The check needs to evaluate to
 `true` when it is active. For a Rails app you can just use environments:
 
-    FeatureFlipper.states do
-      state :development, ['development', 'test'].include?(Rails.env)
-      state :staging, ['staging', development', 'test'].include?(Rails.env)
-    end
+```ruby
+FeatureFlipper.states do
+  state :development, ['development', 'test'].include?(Rails.env)
+  state :staging, ['staging', development', 'test'].include?(Rails.env)
+end
+```
 
 Usage
 -----
@@ -96,11 +104,13 @@ Usage
 In your code you then use the `show_feature?` method to branch depending on
 wether a feature is active or not:
 
-    if show_feature?(:rating_game)
-      # new code
-    else
-      # old code
-    end
+```ruby
+if show_feature?(:rating_game)
+  # new code
+else
+  # old code
+end
+```
 
 The `show_feature?` method is defined on Object, so you can use it everywhere.
 
@@ -116,10 +126,12 @@ employees only or to a private beta group, etc.
 
 A dynamic state is defined using a Proc:
 
-    FeatureFlipper.states do
-      state :development, ['development', 'test'].include?(Rails.env)
-      state :employees, Proc.new { |feature_name| respond_to?(:current_user, true) && current_user.employee? }
-    end
+```ruby
+FeatureFlipper.states do
+  state :development, ['development', 'test'].include?(Rails.env)
+  state :employees, Proc.new { |feature_name| respond_to?(:current_user, true) && current_user.employee? }
+end
+```
 
 The Proc get's evaluated in the context of where you call the `show_feature?`
 method from, so it depends on your app what you can do there. In a typical Rails
@@ -133,8 +145,7 @@ in detail.
 Meta
 ----
 
-* Code: `git clone git://github.com/theflow/feature_flipper.git`
-* Home: <http://github.com/theflow/feature_flipper>
-* Bugs: <http://github.com/theflow/feature_flipper/issues>
+* Home: <https://github.com/theflow/feature_flipper>
+* Bugs: <https://github.com/theflow/feature_flipper/issues>
 
 This project uses [Semantic Versioning](http://semver.org/).
