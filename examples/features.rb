@@ -19,6 +19,6 @@ end
 
 FeatureFlipper.states do
   state :development, ['development', 'test'].include?(Rails.env)
-  state :employees, { :required_state => :development, :feature_group => :employees }
+  state :employees, Proc.new { |feature_name| respond_to?(:current_user, true) && current_user.employee? }
   state :live, true
 end

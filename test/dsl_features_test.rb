@@ -42,13 +42,14 @@ class DslFeaturesTest < Minitest::Test
   end
 
   def test_show_feature_should_work_with_state_procs
+    assert show_feature?(:enabled_beta_feature)
+    assert !show_feature?(:disabled_beta_feature)
+  end
+
+  def test_show_feature_with_state_procs_should_not_look_at_environment
     Rails.stub(:env, 'production') do
       assert show_feature?(:enabled_beta_feature)
       assert !show_feature?(:disabled_beta_feature)
     end
-  end
-
-  def test_show_feature_should_with_state_procs_should_still_respect_environment
-    assert show_feature?(:disabled_beta_feature)
   end
 end

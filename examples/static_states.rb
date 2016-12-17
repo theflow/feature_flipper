@@ -1,7 +1,7 @@
 # Setup
 #
 
-# just need this to make it work from within the library
+# just need this to make it works from within the library
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 
 # fake production Rails environment

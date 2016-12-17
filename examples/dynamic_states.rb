@@ -1,16 +1,30 @@
 # Setup
 #
 
-# just need this to make it work from within the library
+# just need this to make it works from within the library
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 
-# fake production Rails environment
+# stub production Rails environment
 module Rails
   def self.env
     'production'
   end
 end
 
+# stub current_user method
+class User
+  def initialize(employee)
+    @employee = employee
+  end
+
+  def employee?
+    @employee == true
+  end
+end
+
+def current_user
+  @current_user
+end
 
 # Configuration
 #
@@ -26,7 +40,10 @@ FeatureFlipper::Config.path_to_file = File.expand_path('features.rb', File.dirna
 
 puts "=== first example:"
 
-# no active feature_group set, so the required_state of badges is looked at
+# mock current user to not be a employee
+@current_user = User.new(false)
+
+# current user it not an employee and we are on prod, so no new badges
 if show_feature?(:badges)
   puts "shiny new badges not live on prod yet"
 else
@@ -35,13 +52,11 @@ end
 
 puts "\n=== second example:"
 
-# now we set the active feature_group. Usually depending on the logged in user
-
-FeatureFlipper.reset_active_feature_groups
-FeatureFlipper.active_feature_groups << :employees
+# mock current user to be a employee
+@current_user = User.new(true)
 
 if show_feature?(:badges)
-  puts "shiny new badges for this user"
+  puts "shiny new badges for this employee"
 else
   puts "no new badges"
 end

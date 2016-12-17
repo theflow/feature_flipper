@@ -49,7 +49,7 @@ states: `:development` is active on development servers and `:live` is always ac
 The feature `:rating_game` is still in development and not shown on the
 production site. The feature `:city_feed` is done and already enabled
 everywhere. You transition features between states by just moving the line to
-the new state block.
+the new state block and deploying your code.
 
 You can take a look at the `static_states.rb` in the examples folder to
 see this in detail.
@@ -87,6 +87,7 @@ A state is just a name and a boolean check. The check needs to evaluate to
 
     FeatureFlipper.states do
       state :development, ['development', 'test'].include?(Rails.env)
+      state :staging, ['staging', development', 'test'].include?(Rails.env)
     end
 
 Usage
@@ -113,41 +114,18 @@ employees only or to a private beta group, etc.
 
 ### Defining dynamic states
 
-A dynamic state is defined a bit different than a normal, static state.
+A dynamic state is defined using a Proc:
 
     FeatureFlipper.states do
       state :development, ['development', 'test'].include?(Rails.env)
-      state :employees, :required_state => :development, :feature_group => :employees
+      state :employees, Proc.new { |feature_name| respond_to?(:current_user, true) && current_user.employee? }
     end
 
-It has a required state and a feature group. The feature group defines
-a symbolic name for the group of users who should see this feature. You
-can name this whatever you want. The required state is the state that gets
-looked at for all other users that aren't in the feature group. The required
-state (:development) must be a defined, static state.
-
-### Setting the feature group
-
-The feature group is set globally and is active for the whole thread.
-In Rails you would define a before_filter like this:
-
-    class ApplicationController < ActionController::Base
-      before_filter :set_active_feature_group
-
-      def set_active_feature_group
-        # we need to reset the feature group in each request,
-        # otherwise it's also active for the following requests.
-        FeatureFlipper.reset_active_feature_groups
-
-        if logged_in? && current_user.employee?
-          FeatureFlipper.active_feature_groups << :employees
-        end
-      end
-
-Don't forget to reset the feature group, without it the feature group
-is active forever. The condition if someone is in a feature group
-can be anything: You can store it in the database, in Redis,
-look at request parameters, based on the current time, etc.
+The Proc get's evaluated in the context of where you call the `show_feature?`
+method from, so it depends on your app what you can do there. In a typical Rails
+app you could do checks on the current user, as shown above. This way the condition
+if someone should see a feature or not can be anything: You can store it in the
+database, in Redis, look at request parameters, based on the current time, etc.
 
 Take a look at `dynamic_states.rb` in the examples folder to see this
 in detail.

@@ -16,5 +16,5 @@ end
 FeatureFlipper.states do
   state :dev, ['development', 'test'].include?(Rails.env)
   state :live, true
-  state :beta, :required_state => :dev, :when => Proc.new { |feature| %{ enabled_beta_feature }.include?(feature.to_s) }
+  state :beta, Proc.new { |feature| 'enabled_beta_feature' == feature.to_s }
 end

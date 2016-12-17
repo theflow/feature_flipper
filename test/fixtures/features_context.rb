@@ -7,5 +7,5 @@ FeatureFlipper.features do
 end
 
 FeatureFlipper.states do
-  state :context, :when => Proc.new { |feature| current_user_betas.include?(feature) }
+  state :context, Proc.new { |feature| current_user_betas.include?(feature) }
 end
