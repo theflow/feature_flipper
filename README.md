@@ -1,14 +1,15 @@
-**NOTE: THIS REPO HAS BEEN DEPRECATED**
-
 FeatureFlipper
 ==============
+
+[![Gem Version](https://badge.fury.io/rb/feature_flipper.svg)](https://rubygems.org/gems/feature_flipper)
+[![Build Status](https://travis-ci.org/theflow/feature_flipper.svg?branch=master)](https://travis-ci.org/theflow/feature_flipper)
 
 FeatureFlipper is a simple library that allows you to restrict certain blocks
 of code to certain environments. This is mainly useful in projects where
 you deploy your application from HEAD and don't use branches.
 
-Read more about the motivation in the
-[introductory blog post](http://engineering.qype.com/2010/06/03/how-we-work-flipping-features/).
+Read more about using feature flips here:
+[Feature Toggles](http://martinfowler.com/articles/feature-toggles.html).
 
 Install
 -------
@@ -139,12 +140,12 @@ In Rails you would define a before_filter like this:
 
     class ApplicationController < ActionController::Base
       before_filter :set_active_feature_group
-      
+
       def set_active_feature_group
         # we need to reset the feature group in each request,
         # otherwise it's also active for the following requests.
         FeatureFlipper.reset_active_feature_groups
-        
+
         if logged_in? && current_user.employee?
           FeatureFlipper.active_feature_groups << :employees
         end
@@ -161,16 +162,8 @@ in detail.
 Meta
 ----
 
-* Code: `git clone git://github.com/qype/feature_flipper.git`
-* Home: <http://github.com/qype/feature_flipper>
-* Bugs: <http://github.com/qype/feature_flipper/issues>
+* Code: `git clone git://github.com/theflow/feature_flipper.git`
+* Home: <http://github.com/theflow/feature_flipper>
+* Bugs: <http://github.com/theflow/feature_flipper/issues>
 
-This project uses [Semantic Versioning][sv].
-
-Author
-------
-
-Florian Munz, Qype GmbH - florian@qype.com
-
-
-[sv]: http://semver.org/
+This project uses [Semantic Versioning](http://semver.org/).
