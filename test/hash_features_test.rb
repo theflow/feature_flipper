@@ -1,5 +1,7 @@
 require 'test_helper'
 
+# this is testing backwards compat
+#
 class HashFeaturesTest < Minitest::Test
   def setup
     FeatureFlipper::Config.path_to_file = 'fixtures/features.rb'

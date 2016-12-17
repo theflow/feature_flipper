@@ -88,7 +88,7 @@ module FeatureFlipper
     end
   end
 
-  class Mapper
+  class FeatureMapper
     def initialize(state)
       @state = state
     end
@@ -98,14 +98,24 @@ module FeatureFlipper
     end
   end
 
-  class StateMapper
+  class FeaturesMapper
     def in_state(state, &block)
-      Mapper.new(state).instance_eval(&block)
+      FeatureMapper.new(state).instance_eval(&block)
+    end
+  end
+
+  class StatesMapper
+    def state(name, condition = false)
+      FeatureFlipper::Config.states[name] = condition
     end
   end
 
   def self.features(&block)
-    StateMapper.new.instance_eval(&block)
+    FeaturesMapper.new.instance_eval(&block)
+  end
+
+  def self.states(&block)
+    StatesMapper.new.instance_eval(&block)
   end
 
   def self.active_feature_groups

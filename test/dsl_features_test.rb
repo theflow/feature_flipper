@@ -10,6 +10,10 @@ class DslFeaturesTest < Minitest::Test
     assert show_feature?(:live_feature)
   end
 
+  def test_should_not_show_disabled_features
+    assert !show_feature?(:disabled_feature)
+  end
+
   def test_should_not_show_a_feature_when_on_a_higher_environment
     Rails.stub(:env, 'production') do
       assert !show_feature?(:dev_feature)
@@ -24,7 +28,7 @@ class DslFeaturesTest < Minitest::Test
     assert show_feature?(:proc_feature)
   end
 
-  def test_should_be_able_to_get_features
+  def test_should_be_able_to_get_all_features
     FeatureFlipper::Config.ensure_config_is_loaded
     all_features = FeatureFlipper::Config.features
 
