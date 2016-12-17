@@ -73,6 +73,10 @@ module FeatureFlipper
         state == true
       end
     end
+    
+    def self.active_features
+      self.features.collect { |key, value| self.is_active?(key) ? key : nil }.compact
+    end
   end
 
   class Mapper
