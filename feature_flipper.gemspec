@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name            = 'feature_flipper'
-  s.version         = '1.3.0'
+  s.version         = '2.0.0'
   s.authors         = ['Florian Munz']
   s.email           = 'surf@theflow.de'
 
