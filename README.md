@@ -94,7 +94,7 @@ A state is just a name and a boolean check. The check needs to evaluate to
 ```ruby
 FeatureFlipper.states do
   state :development, ['development', 'test'].include?(Rails.env)
-  state :staging, ['staging', development', 'test'].include?(Rails.env)
+  state :staging, ['staging', 'development', 'test'].include?(Rails.env)
 end
 ```
 
